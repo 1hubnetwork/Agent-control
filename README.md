@@ -43,3 +43,32 @@ bối cảnh chính trị gia) từ các dự án MIT:
 [kvsdileep/linkedin-writer](https://github.com/kvsdileep/linkedin-writer) ·
 [jalaalrd/anti-ai-slop-writing](https://github.com/jalaalrd/anti-ai-slop-writing) ·
 [jamditis/claude-skills-journalism](https://github.com/jamditis/claude-skills-journalism)
+
+---
+
+# /ba-work — Business Analyst Agent
+
+Bộ agent BA: nhận yêu cầu thô (ghi chú họp, email, ý tưởng) → làm rõ → stakeholder & phạm vi → FR/NFR/BR →
+user story + acceptance criteria (Gherkin) → quy trình AS-IS/TO-BE (Mermaid) → rà soát độc lập → trình duyệt.
+**Không tự tạo ticket hay gửi stakeholder.**
+
+## Thành phần
+| File | Vai trò |
+|---|---|
+| `.claude/commands/ba-work.md` | Lệnh điều phối `/ba-work` (tự chứa, chạy được cả khi không có subagent) |
+| `.claude/agents/ba-elicitor.md` | Làm rõ yêu cầu, giả định, bộ câu hỏi phỏng vấn stakeholder |
+| `.claude/agents/ba-requirements-writer.md` | FR/NFR/BR, user story INVEST, AC Gherkin, ma trận truy vết (RTM) |
+| `.claude/agents/ba-process-modeler.md` | Sơ đồ ngữ cảnh, swimlane AS-IS/TO-BE, sơ đồ trạng thái, gap analysis |
+| `.claude/agents/ba-reviewer.md` | Reviewer độc lập (chỉ đọc), chấm rubric /100, liệt kê lỗ hổng 🔴🟠🟡 |
+
+## Cài đặt
+Copy thư mục `.claude/` vào dự án của bạn (hoặc vào `~/.claude/` để dùng toàn cục).
+
+## Dùng
+```
+/ba-work [chế độ] [dán yêu cầu thô]
+```
+Chế độ: `full` (mặc định) · `elicit` (chỉ bộ câu hỏi) · `stories` (backlog + AC) · `process` (quy trình) · `review` (rà tài liệu có sẵn).
+Có thể gọi thẳng subagent, ví dụ: *"Dùng ba-reviewer rà file docs/srs.md"*.
+
+Nếu có quyền ghi file, kết quả lưu vào `ba-workspace/<slug-du-an>/` (`01-brief.md` … `05-review.md`, `rtm.csv`).
