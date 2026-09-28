@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Agent Control</title>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <style>
+    :root { --bg: #fafaf9; --fg: #1c1917; --muted: #78716c; --line: #e7e5e4; --accent: #0a66c2; }
+    @media (prefers-color-scheme: dark) { :root { --bg: #1c1917; --fg: #f5f5f4; --muted: #a8a29e; --line: #44403c; --accent: #70b5f9; } }
+    * { box-sizing: border-box; }
+    body { margin: 0; font: 16px/1.6 system-ui, sans-serif; background: var(--bg); color: var(--fg); }
+    header { padding: 16px; border-bottom: 1px solid var(--line); display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+    header h1 { font-size: 18px; margin: 0 16px 0 0; }
+    nav button { font: inherit; background: none; border: 1px solid var(--line); color: var(--fg); padding: 4px 12px; border-radius: 6px; cursor: pointer; }
+    nav button.active { border-color: var(--accent); color: var(--accent); }
+    main { max-width: 820px; margin: 0 auto; padding: 16px; }
+    a { color: var(--accent); }
+    pre, code { background: color-mix(in srgb, var(--line) 50%, transparent); border-radius: 4px; }
+    pre { padding: 12px; overflow-x: auto; }
+    table { border-collapse: collapse; display: block; overflow-x: auto; }
+    th, td { border: 1px solid var(--line); padding: 4px 8px; }
+    blockquote { margin: 0; padding-left: 12px; border-left: 3px solid var(--line); color: var(--muted); }
+  </style>
+</head>
+<body>
+  <header><h1>Agent Control</h1><nav id="nav"></nav></header>
+  <main id="content">Đang tải…</main>
+  <script>
+    const nav = document.getElementById('nav');
+    const content = document.getElementById('content');
+    async function show(name) {
+      [...nav.children].forEach(b => b.classList.toggle('active', b.textContent === name));
+      const md = await (await fetch('/docs/' + encodeURIComponent(name))).text();
+      content.innerHTML = window.marked ? marked.parse(md) : '<pre>' + md.replace(/</g, '&lt;') + '</pre>';
+      history.replaceState(null, '', '#' + name);
+    }
+    fetch('/api/docs').then(r => r.json()).then(docs => {
+      docs.forEach(d => { const b = document.createElement('button'); b.textContent = d; b.onclick = () => show(d); nav.appendChild(b); });
+      show(docs.includes(location.hash.slice(1)) ? location.hash.slice(1) : docs[0]);
+    });
+  </script>
+</body>
+</html>

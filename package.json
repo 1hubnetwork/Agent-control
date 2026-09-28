@@ -1,0 +1,10 @@
+{
+  "name": "agent-control",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Local viewer for the /linkedin-work agent docs",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "license": "MIT"
+}
